@@ -49,4 +49,23 @@ public class ExerciseProgress
         Sets = sets;
         Reps = reps;
     }
+
+    public void UpdateStatus(ExerciseStatus status)
+    {
+        ArgumentNullException.ThrowIfNull(ScheduledWorkout, nameof(ScheduledWorkout));
+
+        if (ScheduledWorkout.Status != WorkoutStatus.InProgress)
+            throw new ScheduledWorkoutNotInProgress(ScheduledWorkout.Id);
+        
+        if (status == ExerciseStatus.Completed && this.Status != ExerciseStatus.InProgress)
+            throw new ExerciseNotInProgress("Cannot complete an exercise that is not in progress.");
+
+        if (this.Status == ExerciseStatus.Completed)
+            CompletedAt = default;
+
+        if (status == ExerciseStatus.Completed)
+            CompletedAt = SystemClock.Instance.GetCurrentInstant();
+
+        Status = status;
+    }
 }
