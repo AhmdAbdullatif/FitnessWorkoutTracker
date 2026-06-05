@@ -13,6 +13,8 @@ namespace Infrastructure.Data.Config
             builder.Property(x => x.Email).HasMaxLength(256);
 
             builder.Property(x => x.HashedPassword).HasMaxLength(256);
+
+            builder.HasIndex(x => x.Email);
         }
     }
 }
