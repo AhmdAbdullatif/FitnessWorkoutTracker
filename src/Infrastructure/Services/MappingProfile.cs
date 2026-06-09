@@ -1,4 +1,5 @@
-﻿using Application.Features.Workouts.GetAll;
+﻿using Application.Features.Exercises.Get;
+using Application.Features.Workouts.GetAll;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -13,6 +14,7 @@ namespace Infrastructure.Services
         public MappingProfile()
         {
             CreateMap<Workout, WorkoutDto>();
+            CreateMap<Exercise, ExerciseDto>();
         }
     }
 }
