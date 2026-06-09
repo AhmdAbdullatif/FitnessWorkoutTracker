@@ -7,7 +7,9 @@ namespace Application.Abstraction
 {
     public interface IWorkoutRepository
     {
-        Task<Workout?> GetWorkoutWithRelatedExercises(Guid workoutId, Guid userId);
+        Task<IEnumerable<Workout>> GetAllAsync(Guid userId);
+        Task<Workout?> GetByIdWithExercisesAsync(Guid workoutId, Guid userId);
+        Task AddAsync(Workout workout);
         Task SaveChangesAsync();
     }
 }

@@ -16,7 +16,7 @@ namespace Application.Features.Exercises.Create
         {
             var userId = currentUserAccessor.GetId();
 
-            Workout? workout = await workoutRepository.GetWorkoutWithRelatedExercises(workoutId, userId);
+            Workout? workout = await workoutRepository.GetByIdWithExercisesAsync(workoutId, userId);
             if (workout is null)
                 throw new NotFoundException("Workout not found.");
 

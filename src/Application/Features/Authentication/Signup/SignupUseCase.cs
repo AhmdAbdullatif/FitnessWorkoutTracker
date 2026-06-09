@@ -19,7 +19,8 @@ public class SignupUseCase(IUserRepository userRepository,
         var hashedPassword = passwordHasher.HashPassword(command.Password);
         user = new User(command.Username, command.Email, hashedPassword);
 
-        await userRepository.AddUserAsync(user);
+        await userRepository.AddAsync(user);
+        await userRepository.SaveChangesAsync();
 
         var token = jwtProvider.Create(user);
 

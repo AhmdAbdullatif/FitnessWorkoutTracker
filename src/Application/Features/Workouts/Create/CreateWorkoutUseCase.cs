@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Application.Features.Workouts.Create
 {
-    public class CreateWorkoutUseCase(IRepository<Workout> workoutRepository,
+    public class CreateWorkoutUseCase(IWorkoutRepository workoutRepository,
         ICurrentUserAccessor currentUserAccessor
     )
     {

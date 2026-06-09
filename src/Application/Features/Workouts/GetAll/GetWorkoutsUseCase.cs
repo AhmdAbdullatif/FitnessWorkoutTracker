@@ -4,7 +4,7 @@ using Domain.Entities;
 
 namespace Application.Features.Workouts.GetAll
 {
-    public class GetWorkoutsUseCase(IRepository<Workout> workoutRepository,
+    public class GetWorkoutsUseCase(IWorkoutRepository workoutRepository,
         ICurrentUserAccessor currentUserAccessor
     )  
     {
@@ -12,7 +12,7 @@ namespace Application.Features.Workouts.GetAll
         {
             var userId = currentUserAccessor.GetId();
 
-            var workouts =  await workoutRepository.WhereAsync(x => x.UserId == userId);
+            var workouts =  await workoutRepository.GetAllAsync(userId);
 
             return new GetWorkoutsResult()
             {
