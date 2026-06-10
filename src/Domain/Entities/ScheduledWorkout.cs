@@ -19,8 +19,6 @@ public class ScheduledWorkout
 
     public static ScheduledWorkout Schedule(Workout workout, Instant sessionDate)
     {
-        ArgumentNullException.ThrowIfNull(workout, nameof(workout));
-
         if (!workout.HasExercises)
             throw new WorkoutWithoutExercisesException(workout.Id);
 
@@ -55,7 +53,7 @@ public class ScheduledWorkout
     public void Finish()
     {
         if (Status != WorkoutStatus.InProgress)
-            throw new ScheduledWorkoutNotInProgress(Id);
+            throw new ScheduledWorkoutNotInProgressException(Id);
 
         Status = WorkoutStatus.Completed;
         CompletedAt = SystemClock.Instance.GetCurrentInstant();

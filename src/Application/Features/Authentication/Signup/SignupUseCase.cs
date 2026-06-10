@@ -14,7 +14,7 @@ public class SignupUseCase(IUserRepository userRepository,
     {
         User? user = await userRepository.GetByEmailAsync(command.Email);
         if (user is not null)
-            throw new EmailConflict();
+            throw new EmailConflictException();
 
         var hashedPassword = passwordHasher.HashPassword(command.Password);
         user = new User(command.Username, command.Email, hashedPassword);

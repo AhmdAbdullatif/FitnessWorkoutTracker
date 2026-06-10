@@ -1,6 +1,6 @@
 namespace Domain.Exceptions;
 
-public class WorkoutWithoutExercisesException : Exception
+public class WorkoutWithoutExercisesException : DomainException
 {
     public Guid WorkoutId { get; }
     public WorkoutWithoutExercisesException(Guid workoutId)

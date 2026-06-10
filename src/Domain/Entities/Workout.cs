@@ -28,7 +28,6 @@ public class Workout
 
     public void AddExercise(Exercise exercise)
     {
-        ArgumentNullException.ThrowIfNull(exercise, nameof(exercise));
         Exercises.Add(exercise);
         ExercisesCount++;
     }
@@ -36,7 +35,6 @@ public class Workout
 
     public void AddScheduledWorkout(ScheduledWorkout scheduledWorkout)
     {
-        ArgumentNullException.ThrowIfNull(scheduledWorkout, nameof(scheduledWorkout));
         ScheduledWorkouts.Add(scheduledWorkout);
     }
 }

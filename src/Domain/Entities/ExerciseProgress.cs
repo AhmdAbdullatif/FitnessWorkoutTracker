@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.Security;
 using Domain.Exceptions;
 using NodaTime;
 
@@ -33,7 +31,7 @@ public class ExerciseProgress
         ArgumentNullException.ThrowIfNull(ScheduledWorkout, nameof(ScheduledWorkout));
 
         if (ScheduledWorkout.Status != WorkoutStatus.InProgress)
-            throw new ScheduledWorkoutNotInProgress(ScheduledWorkout.Id);
+            throw new ScheduledWorkoutNotInProgressException(ScheduledWorkout.Id);
 
         if (Status != ExerciseStatus.Pending)
             return;
@@ -56,10 +54,10 @@ public class ExerciseProgress
         ArgumentNullException.ThrowIfNull(ScheduledWorkout, nameof(ScheduledWorkout));
 
         if (ScheduledWorkout.Status != WorkoutStatus.InProgress)
-            throw new ScheduledWorkoutNotInProgress(ScheduledWorkout.Id);
+            throw new ScheduledWorkoutNotInProgressException(ScheduledWorkout.Id);
         
         if (status == ExerciseStatus.Completed && this.Status != ExerciseStatus.InProgress)
-            throw new ExerciseNotInProgress("Cannot complete an exercise that is not in progress.");
+            throw new ExerciseNotInProgressException("Cannot complete an exercise that is not in progress.");
 
         if (this.Status == ExerciseStatus.Completed)
             CompletedAt = default;

@@ -18,11 +18,11 @@ namespace Application.Features.Authentication.Login
             User? user = await userRepository.GetByEmailAsync(command.Email);
 
             if (user is null)
-                throw new InvalidCredentialException();
+                throw new InvalidUserCredentialsException();
 
             var isPasswordCorrect = passwordHasher.VerifyPassword(user.HashedPassword, command.Password);
             if (!isPasswordCorrect)
-                throw new InvalidCredentialException();
+                throw new InvalidUserCredentialsException();
 
             var token = jwtProvider.Create(user);
 
