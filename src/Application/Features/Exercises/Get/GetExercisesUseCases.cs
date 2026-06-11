@@ -12,7 +12,7 @@ namespace Application.Features.Exercises.Get
         ICurrentUserAccessor currentUserAccessor,
         IUtcLocalConverter utcLocalConverter)
     {
-        public async Task<GetExercisesResponse> Execute(Guid workoutId, string userZone)
+        public async Task<GetExercisesResponse> ExecuteAsync(Guid workoutId, string userZone)
         {
             var userId = currentUserAccessor.GetId();
 

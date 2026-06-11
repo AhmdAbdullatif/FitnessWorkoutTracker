@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Services.Repository
+namespace Infrastructure.Services.Repositories
 {
     public class WorkoutRepository(AppDbContext context) : IWorkoutRepository
     {

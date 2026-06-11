@@ -17,7 +17,7 @@ public class ScheduleWorkoutEndpoint(ScheduleWorkoutUseCase scheduleWorkoutUseCa
 
         var workoutId = Route<Guid>("workoutId");
 
-        var response = await scheduleWorkoutUseCase.Execute(req.SessionDate, workoutId, userZone);
+        var response = await scheduleWorkoutUseCase.ExecuteAsync(req.SessionDate, workoutId, userZone);
 
         await SendAsync(response, cancellation: ct);
     }

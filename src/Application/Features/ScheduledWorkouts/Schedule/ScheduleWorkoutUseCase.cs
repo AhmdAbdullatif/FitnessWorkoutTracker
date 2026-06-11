@@ -9,7 +9,7 @@ public class ScheduleWorkoutUseCase(IWorkoutRepository workoutRepository,
     ICurrentUserAccessor currentUserAccessor,
     IUtcLocalConverter utcLocalConverter)
 {
-    public async Task<ScheduleWorkoutResponse> Execute(DateTime sessionDate, Guid workoutId, string userZone)
+    public async Task<ScheduleWorkoutResponse> ExecuteAsync(DateTime sessionDate, Guid workoutId, string userZone)
     {
         var userId = currentUserAccessor.GetId();
 

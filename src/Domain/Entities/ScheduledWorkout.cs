@@ -38,7 +38,7 @@ public class ScheduledWorkout
     public void Start()
     {
         if (Status != WorkoutStatus.Pending)
-            return;
+            throw new ScheduledWorkoutNotPendingException(Id);
 
         ArgumentNullException.ThrowIfNull(Workout, nameof(Workout));
 

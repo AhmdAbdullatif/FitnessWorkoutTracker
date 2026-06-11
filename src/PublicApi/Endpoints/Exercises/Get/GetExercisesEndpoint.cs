@@ -18,7 +18,7 @@ namespace PublicApi.Endpoints.Exercises.Get
 
             var workoutId = Route<Guid>("workoutId");
 
-            var response = await getExercisesUseCases.Execute(workoutId, userZone);
+            var response = await getExercisesUseCases.ExecuteAsync(workoutId, userZone);
 
             await SendAsync(response, cancellation: ct);
         }

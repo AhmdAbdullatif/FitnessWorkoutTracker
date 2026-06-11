@@ -5,18 +5,17 @@ using Application.Features.Authentication.Signup;
 using Application.Features.Exercises.Create;
 using Application.Features.Exercises.Get;
 using Application.Features.ScheduledWorkouts.Schedule;
+using Application.Features.ScheduledWorkouts.Start;
 using Application.Features.Workouts.Create;
 using Application.Features.Workouts.GetAll;
-using Domain.Entities;
 using FastEndpoints;
 using Infrastructure.Data;
 using Infrastructure.Services;
 using Infrastructure.Services.Authentication;
-using Infrastructure.Services.Repository;
+using Infrastructure.Services.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using PublicApi;
 using PublicApi.Middlewares;
 using PublicApi.Services;
 
@@ -66,6 +65,9 @@ builder.Services.AddScoped<GetExercisesUseCases>();
 builder.Services.AddSingleton<IUtcLocalConverter, UtcLocalConverter>();
 
 builder.Services.AddScoped<ScheduleWorkoutUseCase>();
+
+builder.Services.AddScoped<IScheduledWorkoutRepository, ScheduledWorkoutRepository>();
+builder.Services.AddScoped<StartScheduledWorkoutUseCase>();
 
 builder.Services.AddOpenApi();
 
