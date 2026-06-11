@@ -2,6 +2,7 @@ using System.Text;
 using Application.Abstraction;
 using Application.Features.Authentication.Login;
 using Application.Features.Authentication.Signup;
+using Application.Features.ExerciseProgresses.Start;
 using Application.Features.Exercises.Create;
 using Application.Features.Exercises.Get;
 using Application.Features.ScheduledWorkouts.Schedule;
@@ -68,6 +69,9 @@ builder.Services.AddScoped<ScheduleWorkoutUseCase>();
 
 builder.Services.AddScoped<IScheduledWorkoutRepository, ScheduledWorkoutRepository>();
 builder.Services.AddScoped<StartScheduledWorkoutUseCase>();
+
+builder.Services.AddScoped<IExerciseProgressRepository, ExerciseProgressRepository>();
+builder.Services.AddScoped<StartExerciseProgressUseCase>();
 
 builder.Services.AddOpenApi();
 

@@ -34,7 +34,7 @@ public class ExerciseProgress
             throw new ScheduledWorkoutNotInProgressException(ScheduledWorkout.Id);
 
         if (Status != ExerciseStatus.Pending)
-            return;
+            throw new ExerciseNotPendingException(Id);
 
         if (sets <= 0)
             throw new NegativeNumberException("Sets can't be zero or negative.");
