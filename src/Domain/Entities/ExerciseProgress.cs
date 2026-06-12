@@ -55,12 +55,15 @@ public class ExerciseProgress
 
         if (ScheduledWorkout.Status != WorkoutStatus.InProgress)
             throw new ScheduledWorkoutNotInProgressException(ScheduledWorkout.Id);
+
+        if (this.Status == ExerciseStatus.Pending)
+            throw new ExerciseCannotBeUpdatedException(Id);
         
         if (status == ExerciseStatus.Completed && this.Status != ExerciseStatus.InProgress)
             throw new ExerciseNotInProgressException("Cannot complete an exercise that is not in progress.");
 
         if (this.Status == ExerciseStatus.Completed)
-            CompletedAt = default;
+            CompletedAt = null;
 
         if (status == ExerciseStatus.Completed)
             CompletedAt = SystemClock.Instance.GetCurrentInstant();
