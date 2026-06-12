@@ -4,6 +4,7 @@ using Application.Features.Authentication.Login;
 using Application.Features.Authentication.Signup;
 using Application.Features.ExerciseProgresses.AddNote;
 using Application.Features.ExerciseProgresses.GetAll;
+using Application.Features.ExerciseProgresses.GetById;
 using Application.Features.ExerciseProgresses.Start;
 using Application.Features.ExerciseProgresses.Update;
 using Application.Features.Exercises.Create;
@@ -81,6 +82,8 @@ builder.Services.AddScoped<GetExerciseProgressesUseCase>();
 builder.Services.AddScoped<UpdateExerciseProgressStatusUseCase>();
 
 builder.Services.AddScoped<AddNoteToExerciseProgressUseCase>();
+
+builder.Services.AddScoped<GetExerciseProgressByIdUseCase>();
 
 builder.Services.AddOpenApi();
 

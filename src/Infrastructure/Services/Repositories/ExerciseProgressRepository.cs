@@ -1,4 +1,5 @@
 using Application.Abstraction;
+using Application.Features.ExerciseProgresses.GetAll;
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ public class ExerciseProgressRepository(AppDbContext context) : IExerciseProgres
     {
         return await context.ExerciseProgresses
             .Include(x => x.Notes)
-            .FirstOrDefaultAsync(x => x.Id == exerciseProgressId && 
+            .FirstOrDefaultAsync(x => x.Id == exerciseProgressId &&
                 x.ScheduledWorkout!.Workout!.UserId == userId);
     }
 
@@ -21,6 +22,17 @@ public class ExerciseProgressRepository(AppDbContext context) : IExerciseProgres
             .Include(x => x.ScheduledWorkout)
             .FirstOrDefaultAsync(x => x.Id == exerciseProgressId &&
                 x.ScheduledWorkout!.Workout!.UserId == userId);
+    }
+
+    public async Task<ExerciseProgress?> GetByIdWithExerciseAndNotes(Guid exerciseProgressId, Guid userId)
+    {
+        return await context.ExerciseProgresses
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Include(x => x.Exercise)
+            .Include(x => x.Notes)
+            .FirstOrDefaultAsync(x => x.Id == exerciseProgressId
+            && x.ScheduledWorkout!.Workout!.UserId == userId);
     }
 
     public async Task SaveChangesAsync()
