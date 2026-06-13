@@ -5,6 +5,8 @@ namespace Domain.Entities;
 
 public class ExerciseProgress
 {
+    private readonly List<Note> _notes = [];
+
     private ExerciseProgress() { } // required by EF Core
     public ExerciseProgress(Guid exerciseId, ScheduledWorkout scheduledWorkout)
     {
@@ -20,7 +22,7 @@ public class ExerciseProgress
     public ExerciseStatus Status { get; private set; }
     public Instant? StartedAt { get; private set; }
     public Instant? CompletedAt { get; private set; }
-    public ICollection<Note> Notes { get; private set; } = [];
+    public IReadOnlyCollection<Note> Notes => _notes;
     public Guid ScheduledWorkoutId { get; private set; }
     public ScheduledWorkout? ScheduledWorkout { get; private set; }
     public Guid ExerciseId { get; private set; }
@@ -31,10 +33,7 @@ public class ExerciseProgress
         ArgumentNullException.ThrowIfNull(ScheduledWorkout, nameof(ScheduledWorkout));
 
         if (ScheduledWorkout.Status != WorkoutStatus.InProgress)
-            throw new ScheduledWorkoutNotInProgressException(ScheduledWorkout.Id);
-
-        if (Status != ExerciseStatus.Pending)
-            throw new ExerciseNotPendingException(Id);
+            throw new ScheduledWorkoutNotInProgressException("Cannot start an exercise progress that is not in a running scheduled workout.");
 
         if (sets <= 0)
             throw new NegativeNumberException("Sets can't be zero or negative.");
@@ -42,36 +41,45 @@ public class ExerciseProgress
         if (reps <= 0)
             throw new NegativeNumberException("Reps can't be zero or negative.");
 
-        Status = ExerciseStatus.InProgress;
         StartedAt = SystemClock.Instance.GetCurrentInstant();
-
         Sets = sets;
         Reps = reps;
+
+        if (Status == ExerciseStatus.Completed) // can reopen again
+            CompletedAt = null;
+
+        Status = ExerciseStatus.InProgress;
     }
 
-    public void UpdateStatus(ExerciseStatus status)
+    public void Complete()
     {
         ArgumentNullException.ThrowIfNull(ScheduledWorkout, nameof(ScheduledWorkout));
 
         if (ScheduledWorkout.Status != WorkoutStatus.InProgress)
-            throw new ScheduledWorkoutNotInProgressException(ScheduledWorkout.Id);
+            throw new ScheduledWorkoutNotInProgressException("Cannot complete an exercise progress that is not in a running scheduled workout.");
 
-        if (this.Status == ExerciseStatus.Pending)
-            throw new ExerciseCannotBeUpdatedException(Id);
-        
-        if (status == ExerciseStatus.Completed && this.Status != ExerciseStatus.InProgress)
-            throw new ExerciseNotInProgressException("Cannot complete an exercise that is not in progress.");
+        if (Status != ExerciseStatus.InProgress)
+            throw new ExerciseNotInProgressException("Cannot complete an exercise that is not currently in progress.");
 
-        if (this.Status == ExerciseStatus.Completed)
+        Status = ExerciseStatus.Completed;
+        CompletedAt = SystemClock.Instance.GetCurrentInstant();
+    }
+
+    public void Skip()
+    {
+        ArgumentNullException.ThrowIfNull(ScheduledWorkout, nameof(ScheduledWorkout));
+
+        if (ScheduledWorkout.Status == WorkoutStatus.Pending)
+            throw new ScheduledWorkoutPendingException("Cannot skip an exercise progress while the scheduled workout not started yet.");
+
+        if (Status == ExerciseStatus.Completed)
             CompletedAt = null;
 
-        if (status == ExerciseStatus.Completed)
-            CompletedAt = SystemClock.Instance.GetCurrentInstant();
-        Status = status;
+        Status = ExerciseStatus.Skipped;
     }
     public void AddNote(string note)
     {
         ArgumentNullException.ThrowIfNull(note);
-        Notes.Add(new Note(note, Id));
+        _notes.Add(new Note(note, Id));
     }
 }

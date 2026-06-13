@@ -6,9 +6,9 @@ using Application.Features.ExerciseProgresses.AddNote;
 using Application.Features.ExerciseProgresses.GetAll;
 using Application.Features.ExerciseProgresses.GetById;
 using Application.Features.ExerciseProgresses.Start;
-using Application.Features.ExerciseProgresses.Update;
 using Application.Features.Exercises.Create;
 using Application.Features.Exercises.Get;
+using Application.Features.ScheduledWorkouts.Cancel;
 using Application.Features.ScheduledWorkouts.Finish;
 using Application.Features.ScheduledWorkouts.GetAll;
 using Application.Features.ScheduledWorkouts.GetById;
@@ -82,8 +82,6 @@ builder.Services.AddScoped<IStartExerciseProgressUseCase, StartExerciseProgressU
 
 builder.Services.AddScoped<IGetExerciseProgressesUseCase, GetExerciseProgressesUseCase>();
 
-builder.Services.AddScoped<IUpdateExerciseProgressStatusUseCase, UpdateExerciseProgressStatusUseCase>();
-
 builder.Services.AddScoped<IAddNoteToExerciseProgressUseCase, AddNoteToExerciseProgressUseCase>();
 
 builder.Services.AddScoped<IGetExerciseProgressByIdUseCase, GetExerciseProgressByIdUseCase>();
@@ -93,6 +91,8 @@ builder.Services.AddScoped<IGetScheduledWorkoutsUseCase, GetScheduledWorkoutsUse
 builder.Services.AddScoped<IGetScheduledWorkoutByIdUseCase, GetScheduledWorkoutByIdUseCase>();
 
 builder.Services.AddScoped<IFinishScheduledWorkoutUseCase, FinishScheduledWorkoutUseCase>();
+
+builder.Services.AddScoped<ICancelScheduledWorkoutUseCase, CancelScheduledWorkoutUseCase>();
 
 builder.Services.AddOpenApi();
 

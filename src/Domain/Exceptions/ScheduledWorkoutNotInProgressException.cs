@@ -6,4 +6,9 @@ public class ScheduledWorkoutNotInProgressException : DomainException
     {
         
     }
+
+    public ScheduledWorkoutNotInProgressException(string message) : base(message)
+    {
+        
+    }
 }

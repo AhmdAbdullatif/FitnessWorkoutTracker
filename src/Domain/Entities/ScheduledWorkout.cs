@@ -55,24 +55,28 @@ public class ScheduledWorkout
         if (Status != WorkoutStatus.InProgress)
             throw new ScheduledWorkoutNotInProgressException(Id);
 
-        Status = WorkoutStatus.Completed;
         CompletedAt = SystemClock.Instance.GetCurrentInstant();
 
         foreach (var exerciseProgress in ExerciseProgresses)
         {
             if (exerciseProgress.Status != ExerciseStatus.Completed)
-                exerciseProgress.UpdateStatus(ExerciseStatus.Skipped);
+                exerciseProgress.Skip();
         }
+        
+        Status = WorkoutStatus.Completed;
     }
 
     public void Cancel()
     {
-        Status = WorkoutStatus.Canceled;
+        if (Status != WorkoutStatus.InProgress)
+            throw new ScheduledWorkoutNotInProgressException(Id);
 
         foreach (var exerciseProgress in ExerciseProgresses)
         {
             if (exerciseProgress.Status != ExerciseStatus.Completed)
-                exerciseProgress.UpdateStatus(ExerciseStatus.Skipped);
+                exerciseProgress.Skip();
         }
+
+        Status = WorkoutStatus.Canceled;
     }
 }
