@@ -9,12 +9,12 @@ public class StartScheduledWorkoutEndpoint(IStartScheduledWorkoutUseCase startSc
 {
     public override void Configure()
     {
-        Post("api/workouts/start/{scheduledWorkoutId}");
+        Post("api/scheduled-workouts/{id}/start");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var scheduledWorkoutId = Route<Guid>("scheduledWorkoutId");
+        var scheduledWorkoutId = Route<Guid>("id");
 
         var userZone = HttpContext.Request.Headers[HeaderNames.TIME_ZONE_HEADER].ToString();
 

@@ -8,12 +8,12 @@ public class AddNoteToExerciseProgressEndpoint(IAddNoteToExerciseProgressUseCase
 {
     public override void Configure()
     {
-        Post("api/exercises/add-note/{exerciseProgressId}");
+        Post("api/exercise-progresses/{id}/notes");
     }
 
     public override async Task HandleAsync(AddNoteRequest req, CancellationToken ct)
     {
-        var exerciseProgressId = Route<Guid>("exerciseProgressId");
+        var exerciseProgressId = Route<Guid>("id");
 
         await addNoteToExerciseProgressUseCase.ExecuteAsync(exerciseProgressId, req);
 

@@ -3,8 +3,10 @@ using Application.Abstraction;
 using Application.Features.Authentication.Login;
 using Application.Features.Authentication.Signup;
 using Application.Features.ExerciseProgresses.AddNote;
+using Application.Features.ExerciseProgresses.Complete;
 using Application.Features.ExerciseProgresses.GetAll;
 using Application.Features.ExerciseProgresses.GetById;
+using Application.Features.ExerciseProgresses.Skip;
 using Application.Features.ExerciseProgresses.Start;
 using Application.Features.Exercises.Create;
 using Application.Features.Exercises.Get;
@@ -93,6 +95,9 @@ builder.Services.AddScoped<IGetScheduledWorkoutByIdUseCase, GetScheduledWorkoutB
 builder.Services.AddScoped<IFinishScheduledWorkoutUseCase, FinishScheduledWorkoutUseCase>();
 
 builder.Services.AddScoped<ICancelScheduledWorkoutUseCase, CancelScheduledWorkoutUseCase>();
+
+builder.Services.AddScoped<ISkipExerciseProgressUseCase, SkipExerciseProgressUseCase>();
+builder.Services.AddScoped<ICompleteExerciseProgressUseCase, CompleteExerciseProgressUseCase>();
 
 builder.Services.AddOpenApi();
 

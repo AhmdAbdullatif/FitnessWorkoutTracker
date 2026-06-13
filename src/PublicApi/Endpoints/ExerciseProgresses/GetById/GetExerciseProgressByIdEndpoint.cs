@@ -9,14 +9,14 @@ public class GetExerciseProgressByIdEndpoint(IGetExerciseProgressByIdUseCase get
 {
     public override void Configure()
     {
-        Get("api/workouts/schedule/exercises/{exerciseProgressId}");
+        Get("api/exercise-progresses/{id}");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
         var userZone = HttpContext.Request.Headers[HeaderNames.TIME_ZONE_HEADER].ToString();
 
-        var exerciseProgressId = Route<Guid>("exerciseProgressId");
+        var exerciseProgressId = Route<Guid>("id");
     
         var response =  await getExerciseProgressByIdUseCase.ExecuteAsync(exerciseProgressId, userZone);
 

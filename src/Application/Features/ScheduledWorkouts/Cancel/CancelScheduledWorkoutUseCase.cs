@@ -23,8 +23,8 @@ public class CancelScheduledWorkoutUseCase(IScheduledWorkoutRepository scheduled
         if (scheduledWorkout is null)
             throw new NotFoundException($"Scheduled workout with ID `{scheduledWorkoutId}` not found.");
 
+        scheduledWorkout.Cancel();
         
-
         var scheduledWorkoutDto = new ScheduledWorkoutDto()
         {
             Id = scheduledWorkout.Id,

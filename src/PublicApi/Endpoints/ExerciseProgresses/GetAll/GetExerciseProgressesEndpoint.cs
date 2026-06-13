@@ -8,7 +8,7 @@ public class GetExerciseProgressesEndpoint(IGetExerciseProgressesUseCase getExer
 {
     public override void Configure()
     {
-        Get("api/workouts/schedule/{scheduledWorkoutId}/exercises");
+        Get("api/scheduled-workouts/{scheduledWorkoutId}/exercise-progresses");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

@@ -10,14 +10,14 @@ public class FinishScheduledWorkoutEndpoint(IFinishScheduledWorkoutUseCase finis
 {
     public override void Configure()
     {
-        Put("api/workouts/scheduled-workouts/{scheduledWorkoutId}/Finish");
+        Post("api/scheduled-workouts/{id}/finish");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
         var userZone = HttpContext.Request.Headers[HeaderNames.TIME_ZONE_HEADER].ToString();
 
-        var scheduledWorkoutId = Route<Guid>("scheduledWorkoutId");
+        var scheduledWorkoutId = Route<Guid>("id");
 
         var scheduledWorkoutDto = await finishScheduledWorkoutUseCase.ExecuteAsync(scheduledWorkoutId, userZone);
 
