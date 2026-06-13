@@ -46,4 +46,12 @@ public class ScheduledWorkoutRepository(AppDbContext context) : IScheduledWorkou
         await context.SaveChangesAsync();
     }
 
+    public async Task<ScheduledWorkout?> GetByIdWithWorkoutAndExerciseProgresses(Guid scheduledWorkoutId, Guid userId)
+    {
+        return await context.ScheduledWorkouts
+            .AsSplitQuery()
+            .Include(x => x.Workout)
+            .Include(x => x.ExerciseProgresses)
+            .FirstOrDefaultAsync(x => x.Id == scheduledWorkoutId && x.Workout!.UserId == userId);
+    }
 }
