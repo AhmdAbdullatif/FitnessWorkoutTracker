@@ -41,4 +41,12 @@ public class Workout
         ArgumentNullException.ThrowIfNull(scheduledWorkout, nameof(scheduledWorkout));
         _scheduledWorkouts.Add(scheduledWorkout);
     }
+
+    public void UpdateDetails(string title, string? description)
+    {
+        ArgumentNullException.ThrowIfNull(title);
+
+        Title = title.Trim();
+        Description = description?.Trim();
+    }
 }

@@ -19,6 +19,7 @@ using Application.Features.ScheduledWorkouts.Start;
 using Application.Features.Workouts.Create;
 using Application.Features.Workouts.GetAll;
 using Application.Features.Workouts.GetById;
+using Application.Features.Workouts.Update;
 using FastEndpoints;
 using Infrastructure.Data;
 using Infrastructure.Services;
@@ -101,6 +102,8 @@ builder.Services.AddScoped<ISkipExerciseProgressUseCase, SkipExerciseProgressUse
 builder.Services.AddScoped<ICompleteExerciseProgressUseCase, CompleteExerciseProgressUseCase>();
 
 builder.Services.AddScoped<IGetWorkoutByIdUseCase, GetWorkoutByIdUseCase>();
+
+builder.Services.AddScoped<IUpdateWorkoutUseCase, UpdateWorkoutUseCase>();
 
 builder.Services.AddOpenApi();
 

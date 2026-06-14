@@ -48,5 +48,11 @@ namespace Infrastructure.Services.Repositories
                 .Include(x => x.ScheduledWorkouts.OrderBy(sw => sw.SessionDate))
                 .FirstOrDefaultAsync(x => x.Id == workoutId && x.UserId == userId);
         }
+
+        public async Task<Workout?> GetById(Guid workoutId, Guid userId)
+        {
+            return await context.Workouts
+                .FirstOrDefaultAsync(x => x.Id == workoutId && x.UserId == userId);
+        }
     }
 }

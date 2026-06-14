@@ -11,6 +11,7 @@ namespace Application.Abstraction
         Task<Workout?> GetByIdWithExercisesAsync(Guid workoutId, Guid userId);
         Task<Workout?> GetByIdWithScheduledWorkoutsAsync(Guid workoutId, Guid userId);
         Task<Workout?> GetByIdWithOrderedScheduledWorkoutsReadOnlyAsync(Guid workoutId, Guid userId);
+        Task<Workout?> GetById(Guid workoutId, Guid userId);
         Task AddAsync(Workout workout);
         Task SaveChangesAsync();
     }
