@@ -10,6 +10,7 @@ namespace Application.Abstraction
         Task<IEnumerable<Workout>> GetAllAsync(Guid userId);
         Task<Workout?> GetByIdWithExercisesAsync(Guid workoutId, Guid userId);
         Task<Workout?> GetByIdWithScheduledWorkoutsAsync(Guid workoutId, Guid userId);
+        Task<Workout?> GetByIdWithOrderedScheduledWorkoutsReadOnlyAsync(Guid workoutId, Guid userId);
         Task AddAsync(Workout workout);
         Task SaveChangesAsync();
     }

@@ -8,7 +8,7 @@ public class ScheduleWorkoutEndpoint(IScheduleWorkoutUseCase scheduleWorkoutUseC
 {
     public override void Configure()
     {
-        Post("api/workouts/{workoutId}/schedule-workouts");
+        Post("api/workouts/{workoutId}/scheduled-workouts");
     }
 
     public override async Task HandleAsync(ScheduleWorkoutRequest req, CancellationToken ct)
