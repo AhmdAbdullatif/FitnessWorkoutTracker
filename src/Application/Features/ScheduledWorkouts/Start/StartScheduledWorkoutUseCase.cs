@@ -14,11 +14,12 @@ public class StartScheduledWorkoutUseCase(IScheduledWorkoutRepository scheduledW
         if (string.IsNullOrWhiteSpace(userZone))
             throw new DateTimeZoneNotFoundException("");
             
-        var scheduledWorkout = await scheduledWorkoutRepository
-            .GetByIdWithWorkoutThenExercises(scheduledWorkoutId);
-
         var userId = currentUserAccessor.GetId();
-        if (scheduledWorkout is null || scheduledWorkout.Workout!.UserId != userId)
+
+        var scheduledWorkout = await scheduledWorkoutRepository
+            .GetByIdWithWorkoutThenExercises(scheduledWorkoutId, userId);
+
+        if (scheduledWorkout is null)
             throw new NotFoundException($"Scheduled workout with ID `{scheduledWorkoutId}` not found.");
 
         scheduledWorkout.Start();

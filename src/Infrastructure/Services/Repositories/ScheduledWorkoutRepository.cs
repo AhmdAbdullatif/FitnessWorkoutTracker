@@ -33,12 +33,12 @@ public class ScheduledWorkoutRepository(AppDbContext context) : IScheduledWorkou
             .FirstOrDefaultAsync(x => x.Id == scheduledWorkoutId && x.Workout!.UserId == userId);
     }
 
-    public async Task<ScheduledWorkout?> GetByIdWithWorkoutThenExercises(Guid scheduledWorkoutId)
+    public async Task<ScheduledWorkout?> GetByIdWithWorkoutThenExercises(Guid scheduledWorkoutId, Guid userId)
     {
         return await context.ScheduledWorkouts
             .Include(x => x.Workout)
             .ThenInclude(x => x!.Exercises)
-            .FirstOrDefaultAsync(x => x.Id == scheduledWorkoutId);
+            .FirstOrDefaultAsync(x => x.Id == scheduledWorkoutId && x.Workout!.UserId == userId);
     }
 
     public async Task SaveChangesAsync()
