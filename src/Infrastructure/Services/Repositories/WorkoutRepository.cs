@@ -49,10 +49,15 @@ namespace Infrastructure.Services.Repositories
                 .FirstOrDefaultAsync(x => x.Id == workoutId && x.UserId == userId);
         }
 
-        public async Task<Workout?> GetById(Guid workoutId, Guid userId)
+        public async Task<Workout?> GetByIdAsync(Guid workoutId, Guid userId)
         {
             return await context.Workouts
                 .FirstOrDefaultAsync(x => x.Id == workoutId && x.UserId == userId);
+        }
+
+        public void Delete(Workout workout)
+        {
+            context.Workouts.Remove(workout);
         }
     }
 }

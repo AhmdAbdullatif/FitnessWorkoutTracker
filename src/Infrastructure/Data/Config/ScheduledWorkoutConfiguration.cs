@@ -35,7 +35,7 @@ namespace Infrastructure.Data.Config
             builder.HasOne(x => x.Workout)
                 .WithMany(u => u.ScheduledWorkouts)
                 .HasForeignKey(x => x.WorkoutId)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

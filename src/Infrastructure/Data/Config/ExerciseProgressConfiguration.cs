@@ -31,17 +31,17 @@ namespace Infrastructure.Data.Config
             builder.HasOne(x => x.Exercise)
                 .WithMany(u => u.ExerciseProgresses)
                 .HasForeignKey(x => x.ExerciseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(x => x.ScheduledWorkout)
                 .WithMany(u => u.ExerciseProgresses)
                 .HasForeignKey(x => x.ScheduledWorkoutId)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(x => x.Notes)
                 .WithOne()
                 .HasForeignKey(x => x.ExerciseProgressId)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

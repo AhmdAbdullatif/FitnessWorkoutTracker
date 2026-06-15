@@ -17,6 +17,7 @@ using Application.Features.ScheduledWorkouts.GetById;
 using Application.Features.ScheduledWorkouts.Schedule;
 using Application.Features.ScheduledWorkouts.Start;
 using Application.Features.Workouts.Create;
+using Application.Features.Workouts.Delete;
 using Application.Features.Workouts.GetAll;
 using Application.Features.Workouts.GetById;
 using Application.Features.Workouts.Update;
@@ -104,6 +105,8 @@ builder.Services.AddScoped<ICompleteExerciseProgressUseCase, CompleteExercisePro
 builder.Services.AddScoped<IGetWorkoutByIdUseCase, GetWorkoutByIdUseCase>();
 
 builder.Services.AddScoped<IUpdateWorkoutUseCase, UpdateWorkoutUseCase>();
+
+builder.Services.AddScoped<IDeleteWorkoutUseCase, DeleteWorkoutUseCase>();
 
 builder.Services.AddOpenApi();
 
