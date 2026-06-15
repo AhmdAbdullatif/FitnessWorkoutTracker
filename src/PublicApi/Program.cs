@@ -11,6 +11,7 @@ using Application.Features.ExerciseProgresses.Start;
 using Application.Features.Exercises.Create;
 using Application.Features.Exercises.GetAll;
 using Application.Features.ScheduledWorkouts.Cancel;
+using Application.Features.ScheduledWorkouts.Delete;
 using Application.Features.ScheduledWorkouts.Finish;
 using Application.Features.ScheduledWorkouts.GetById;
 using Application.Features.ScheduledWorkouts.Reschedule;
@@ -107,6 +108,8 @@ builder.Services.AddScoped<IUpdateWorkoutUseCase, UpdateWorkoutUseCase>();
 builder.Services.AddScoped<IDeleteWorkoutUseCase, DeleteWorkoutUseCase>();
 
 builder.Services.AddScoped<IRescheduleWorkoutUseCase, RescheduleWorkoutUseCase>();
+
+builder.Services.AddScoped<IDeleteScheduledWorkoutUseCase, DeleteScheduledWorkoutUseCase>();
 
 builder.Services.AddOpenApi();
 

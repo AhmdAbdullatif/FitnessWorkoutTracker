@@ -51,4 +51,9 @@ public class ScheduledWorkoutRepository(AppDbContext context) : IScheduledWorkou
         return await context.ScheduledWorkouts
             .FirstOrDefaultAsync(x => x.Id == scheduledWorkoutId && x.Workout!.UserId == userId);
     }
+
+    public void Delete(ScheduledWorkout scheduledWorkout)
+    {
+        context.ScheduledWorkouts.Remove(scheduledWorkout);
+    }
 }
