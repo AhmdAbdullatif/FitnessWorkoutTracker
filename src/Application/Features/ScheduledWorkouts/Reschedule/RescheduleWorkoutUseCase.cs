@@ -1,11 +1,12 @@
 using Application.Abstraction;
 using Application.Exceptions;
-using Application.Features.Workouts.Create;
+using Application.Specifications.ScheduledWorkouts;
+using Domain.Entities;
 using NodaTime.TimeZones;
 
 namespace Application.Features.ScheduledWorkouts.Reschedule;
 
-public class RescheduleWorkoutUseCase(IScheduledWorkoutRepository scheduledWorkoutRepository,
+public class RescheduleWorkoutUseCase(IRepository<ScheduledWorkout> repository,
     ICurrentUserAccessor currentUserAccessor,
     IUtcLocalConverter utcLocalConverter) : IRescheduleWorkoutUseCase
 {
@@ -16,7 +17,9 @@ public class RescheduleWorkoutUseCase(IScheduledWorkoutRepository scheduledWorko
 
         var userId = currentUserAccessor.GetId();
 
-        var scheduledWorkout = await scheduledWorkoutRepository.GetByIdAsync(scheduledWorkoutId, userId);
+        var spec = new GetScheduledWorkoutByIdSpec(scheduledWorkoutId, userId);
+
+        var scheduledWorkout = await repository.FirstOrDefaultAsync(spec);
 
         if (scheduledWorkout is null)
             throw new NotFoundException($"Scheduled workout with ID `{scheduledWorkoutId}` not found.");
@@ -24,6 +27,6 @@ public class RescheduleWorkoutUseCase(IScheduledWorkoutRepository scheduledWorko
         var sessionInstant = utcLocalConverter.ConvertLocalToUtc(sessionDate, userZone);
         scheduledWorkout.Reschedule(sessionInstant);
 
-        await scheduledWorkoutRepository.SaveChangesAsync();
+        await repository.SaveChangesAsync();
     }
 }

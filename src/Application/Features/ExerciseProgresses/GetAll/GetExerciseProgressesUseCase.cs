@@ -1,11 +1,13 @@
 using Application.Abstraction;
 using Application.Exceptions;
 using Application.Features.Workouts.Create;
+using Application.Specifications.ScheduledWorkouts;
+using Domain.Entities;
 using NodaTime.TimeZones;
 
 namespace Application.Features.ExerciseProgresses.GetAll;
 
-public class GetExerciseProgressesUseCase(IScheduledWorkoutRepository scheduledWorkoutRepository,
+public class GetExerciseProgressesUseCase(IReadRepository<ScheduledWorkout> readRepository,
     ICurrentUserAccessor currentUserAccessor,
     IUtcLocalConverter utcLocalConverter) : IGetExerciseProgressesUseCase
 {
@@ -16,8 +18,11 @@ public class GetExerciseProgressesUseCase(IScheduledWorkoutRepository scheduledW
 
         var userId = currentUserAccessor.GetId();
 
-        var scheduledWorkout = await scheduledWorkoutRepository
-            .GetByIdWithExerciseProgressesThenWithExercise(scheduledWorkoutId, userId);
+        var spec =
+            new GetScheduledWorkoutByIdWithExerciseProgressesThenWithExerciseReadonlySpec(scheduledWorkoutId, userId);
+
+        var scheduledWorkout = await readRepository
+            .FirstOrDefaultAsync(spec);
 
         if (scheduledWorkout is null)
             throw new NotFoundException($"Scheduled workout with ID `{scheduledWorkoutId}` not found.");

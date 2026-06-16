@@ -74,7 +74,6 @@ builder.Services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
 builder.Services.AddScoped<ICreateWorkoutUseCase, CreateWorkoutUseCase>();
 builder.Services.AddScoped<IGetWorkoutsUseCase, GetWorkoutsUseCase>();
 
-builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
 builder.Services.AddScoped<ICreateExerciseUseCase, CreateExerciseUseCase>();
 
 builder.Services.AddScoped<IGetExercisesUseCases, GetExercisesUseCases>();
@@ -83,7 +82,6 @@ builder.Services.AddSingleton<IUtcLocalConverter, UtcLocalConverter>();
 
 builder.Services.AddScoped<IScheduleWorkoutUseCase, ScheduleWorkoutUseCase>();
 
-builder.Services.AddScoped<IScheduledWorkoutRepository, ScheduledWorkoutRepository>();
 builder.Services.AddScoped<IStartScheduledWorkoutUseCase, StartScheduledWorkoutUseCase>();
 
 builder.Services.AddScoped<IExerciseProgressRepository, ExerciseProgressRepository>();

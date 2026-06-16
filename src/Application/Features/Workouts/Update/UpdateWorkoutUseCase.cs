@@ -1,23 +1,25 @@
 using Application.Abstraction;
 using Application.Exceptions;
-using Application.Features.Workouts.Create;
+using Application.Specifications.Workouts;
+using Domain.Entities;
 
 namespace Application.Features.Workouts.Update;
 
-public class UpdateWorkoutUseCase(IWorkoutRepository workoutRepository,
+public class UpdateWorkoutUseCase(IRepository<Workout> repository,
     ICurrentUserAccessor currentUserAccessor) : IUpdateWorkoutUseCase
 {
     public async Task ExecuteAsync(Guid workoutId, UpdateWorkoutRequest req)
     {
         var userId = currentUserAccessor.GetId();
 
-        var workout = await workoutRepository.GetByIdAsync(workoutId, userId);
+        var spec = new GetWorkoutByIdSpec(workoutId, userId);
+        var workout = await repository.FirstOrDefaultAsync(spec);
 
         if (workout is null)
             throw new NotFoundException($"Workout with ID `{workoutId}` not found.");
 
         workout.UpdateDetails(req.Title, req.Description);
 
-        await workoutRepository.SaveChangesAsync();
+        await repository.SaveChangesAsync();
     }
 }

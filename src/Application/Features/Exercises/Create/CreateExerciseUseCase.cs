@@ -1,6 +1,7 @@
 ﻿using Application.Abstraction;
 using Application.Exceptions;
 using Application.Features.Workouts.Create;
+using Application.Specifications.Workouts;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace Application.Features.Exercises.Create
 {
-    public class CreateExerciseUseCase(IWorkoutRepository workoutRepository,
+    public class CreateExerciseUseCase(IRepository<Workout> repository,
         ICurrentUserAccessor currentUserAccessor
     ) : ICreateExerciseUseCase
     {
@@ -16,14 +17,17 @@ namespace Application.Features.Exercises.Create
         {
             var userId = currentUserAccessor.GetId();
 
-            Workout? workout = await workoutRepository.GetByIdWithExercisesAsync(workoutId, userId);
+            var spec = new GetWorkoutByIdWithExercisesSpec(workoutId, userId);
+
+            Workout? workout = await repository.FirstOrDefaultAsync(spec);
+
             if (workout is null)
                 throw new NotFoundException("Workout not found.");
 
             var exercise = new Exercise(req.Title, req.Description, workoutId);
             workout.AddExercise(exercise);
 
-            await workoutRepository.SaveChangesAsync();
+            await repository.SaveChangesAsync();
             return new CreateExerciseResponse()
             {
                 Id = exercise.Id,

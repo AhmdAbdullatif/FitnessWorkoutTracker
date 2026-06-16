@@ -1,11 +1,12 @@
 using Application.Abstraction;
 using Application.Exceptions;
-using Application.Features.Workouts.Create;
+using Application.Specifications.Workouts;
+using Domain.Entities;
 using NodaTime.TimeZones;
 
 namespace Application.Features.Workouts.GetById;
 
-public class GetWorkoutByIdUseCase(IWorkoutRepository workoutRepository,
+public class GetWorkoutByIdUseCase(IReadRepository<Workout> readRepository,
     ICurrentUserAccessor currentUserAccessor,
     IUtcLocalConverter utcLocalConverter) : IGetWorkoutByIdUseCase
 {
@@ -16,7 +17,8 @@ public class GetWorkoutByIdUseCase(IWorkoutRepository workoutRepository,
 
         var userId = currentUserAccessor.GetId();
 
-        var workout = await workoutRepository.GetByIdWithOrderedScheduledWorkoutsReadOnlyAsync(workoutId, userId);
+        var spec = new GetWorkoutByIdWithOrderedScheduledWorkoutsReadonlySpec(workoutId, userId);
+        var workout = await readRepository.FirstOrDefaultAsync(spec);
 
         if (workout is null)
             throw new NotFoundException($"Workout with ID `{workoutId}` not found.");

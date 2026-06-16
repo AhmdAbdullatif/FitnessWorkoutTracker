@@ -1,25 +1,25 @@
 using Application.Abstraction;
 using Application.Exceptions;
-using Application.Features.Workouts.Create;
+using Application.Specifications.ScheduledWorkouts;
+using Domain.Entities;
 
 namespace Application.Features.ScheduledWorkouts.Start;
 
-public class StartScheduledWorkoutUseCase(IScheduledWorkoutRepository scheduledWorkoutRepository,
+public class StartScheduledWorkoutUseCase(IRepository<ScheduledWorkout> repository,
     ICurrentUserAccessor currentUserAccessor) : IStartScheduledWorkoutUseCase
 {
     public async Task ExecuteAsync(Guid scheduledWorkoutId)
     {
-            
         var userId = currentUserAccessor.GetId();
 
-        var scheduledWorkout = await scheduledWorkoutRepository
-            .GetByIdWithWorkoutThenExercises(scheduledWorkoutId, userId);
+        var spec = new GetScheduledWorkoutByIdWithWorkoutThenExercisesSpec(scheduledWorkoutId, userId);
+        var scheduledWorkout = await repository.FirstOrDefaultAsync(spec);
 
         if (scheduledWorkout is null)
             throw new NotFoundException($"Scheduled workout with ID `{scheduledWorkoutId}` not found.");
 
         scheduledWorkout.Start();
 
-        await scheduledWorkoutRepository.SaveChangesAsync();
+        await repository.SaveChangesAsync();
     }
 }

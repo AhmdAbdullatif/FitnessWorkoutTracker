@@ -1,11 +1,12 @@
 ﻿using Application.Abstraction;
-using Application.Features.Workouts.Create;
+using Application.Specifications;
+using Application.Specifications.Workouts;
 using Domain.Entities;
 using NodaTime.TimeZones;
 
 namespace Application.Features.Workouts.GetAll
 {
-    public class GetWorkoutsUseCase(IWorkoutRepository workoutRepository,
+    public class GetWorkoutsUseCase(IReadRepository<Workout> readRepository,
         ICurrentUserAccessor currentUserAccessor,
         IUtcLocalConverter utcLocalConverter
     ) : IGetWorkoutsUseCase
@@ -17,7 +18,9 @@ namespace Application.Features.Workouts.GetAll
 
             var userId = currentUserAccessor.GetId();
 
-            var workouts = await workoutRepository.GetAllAsync(userId);
+            var spec = new GetAllWorkoutsReadonlySpec(userId);
+
+            var workouts = await readRepository.ListAsync(spec);
 
             var workoutDtos = workouts.Select(x => new WorkoutDto()
             {

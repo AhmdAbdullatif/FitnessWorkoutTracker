@@ -1,6 +1,7 @@
 ﻿using Application.Abstraction;
 using Application.Exceptions;
 using Application.Features.Workouts.Create;
+using Application.Specifications.Workouts;
 using Domain.Entities;
 using NodaTime.TimeZones;
 using System;
@@ -9,7 +10,7 @@ using System.Text;
 
 namespace Application.Features.Exercises.GetAll
 {
-    public class GetExercisesUseCases(IWorkoutRepository workoutRepository,
+    public class GetExercisesUseCases(IRepository<Workout> repository,
         ICurrentUserAccessor currentUserAccessor,
         IUtcLocalConverter utcLocalConverter) : IGetExercisesUseCases
     {
@@ -20,7 +21,9 @@ namespace Application.Features.Exercises.GetAll
                 
             var userId = currentUserAccessor.GetId();
 
-            var workout = await workoutRepository.GetByIdWithExercisesAsync(workoutId, userId);
+            var spec = new GetWorkoutByIdWithExercisesSpec(workoutId, userId);
+            Workout? workout = await repository.FirstOrDefaultAsync(spec);
+
             if (workout is null)
                 throw new NotFoundException($"Workout with ID `{workoutId} not found.`");
 
