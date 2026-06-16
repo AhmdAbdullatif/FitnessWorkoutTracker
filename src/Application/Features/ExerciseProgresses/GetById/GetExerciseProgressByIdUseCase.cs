@@ -1,12 +1,12 @@
 using Application.Abstraction;
 using Application.Exceptions;
-using Application.Features.ExerciseProgresses.GetAll;
-using Application.Features.Workouts.Create;
+using Application.Specifications.ExerciseProgresses;
+using Domain.Entities;
 using NodaTime.TimeZones;
 
 namespace Application.Features.ExerciseProgresses.GetById;
 
-public class GetExerciseProgressByIdUseCase(IExerciseProgressRepository exerciseProgressRepository,
+public class GetExerciseProgressByIdUseCase(IReadRepository<ExerciseProgress> readRepository,
     ICurrentUserAccessor currentUserAccessor,
     IUtcLocalConverter utcLocalConverter) : IGetExerciseProgressByIdUseCase
 {
@@ -17,8 +17,9 @@ public class GetExerciseProgressByIdUseCase(IExerciseProgressRepository exercise
 
         var userId = currentUserAccessor.GetId();
 
-        var exerciseProgress = await exerciseProgressRepository
-            .GetByIdWithExerciseAndNotes(exerciseProgressId, userId);
+        var spec = new GetExerciseProgressByIdWithExerciseAndNotesReadonlySpec(exerciseProgressId, userId);
+
+        var exerciseProgress = await readRepository.FirstOrDefaultAsync(spec);
 
         if (exerciseProgress is null)
             throw new NotFoundException($"Exercise progress with ID `{exerciseProgressId}` not found.");

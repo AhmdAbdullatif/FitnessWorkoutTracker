@@ -1,11 +1,12 @@
 using Application.Abstraction;
 using Application.Exceptions;
-using Application.Features.Workouts.Create;
+using Application.Specifications.ExerciseProgresses;
+using Domain.Entities;
 using NodaTime.TimeZones;
 
 namespace Application.Features.ExerciseProgresses.Start;
 
-public class StartExerciseProgressUseCase(IExerciseProgressRepository exerciseProgressRepository,
+public class StartExerciseProgressUseCase(IRepository<ExerciseProgress> repository,
     ICurrentUserAccessor currentUserAccessor,
     IUtcLocalConverter utcLocalConverter) : IStartExerciseProgressUseCase
 {
@@ -18,8 +19,9 @@ public class StartExerciseProgressUseCase(IExerciseProgressRepository exercisePr
             
         var userId = currentUserAccessor.GetId();
 
-        var exerciseProgress = await exerciseProgressRepository
-            .GetByIdWithScheduledWorkout(exerciseProgressId, userId);
+        var spec = new GetExerciseProgressByIdWithScheduledWorkoutSpec(exerciseProgressId, userId);
+
+        var exerciseProgress = await repository.FirstOrDefaultAsync(spec);
 
         if (exerciseProgress is null)
             throw new NotFoundException($"Exercise progress `{exerciseProgressId}` not found.");
@@ -37,7 +39,7 @@ public class StartExerciseProgressUseCase(IExerciseProgressRepository exercisePr
             Status = exerciseProgress.Status
         };
         
-        await exerciseProgressRepository.SaveChangesAsync();
+        await repository.SaveChangesAsync();
 
         return response;
     }
