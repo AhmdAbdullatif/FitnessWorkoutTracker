@@ -73,7 +73,7 @@ public class ExerciseProgress
             throw new ScheduledWorkoutPendingException("Cannot skip an exercise progress while the scheduled workout not started yet.");
 
         if (Status == ExerciseStatus.Completed)
-            CompletedAt = null;
+            throw new ExerciseProgressCannotBeCanceledException();
 
         Status = ExerciseStatus.Skipped;
     }
