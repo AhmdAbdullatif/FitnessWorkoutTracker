@@ -62,9 +62,11 @@ builder.Services.AddAuthentication()
         };
     });
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+builder.Services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
+
 builder.Services.AddScoped<ISignupUseCase, SignupUseCase>();
 builder.Services.AddScoped<ILoginUseCase, LoginUseCase>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IJwtProvider, JwtProvider>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddHttpContextAccessor();
