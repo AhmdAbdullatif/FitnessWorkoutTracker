@@ -8,7 +8,8 @@ namespace Application.Features.Authentication.Signup;
 
 public class SignupUseCase(IRepository<User> repository,
     IJwtProvider jwtProvider,
-    IPasswordHasher passwordHasher
+    IPasswordHasher passwordHasher,
+    IAppLogger<SignupUseCase> logger
 ) : ISignupUseCase
 
 {
@@ -17,7 +18,11 @@ public class SignupUseCase(IRepository<User> repository,
         var spec = new GetUserByEmailReadonlySpec(command.Email);
         User? user = await repository.FirstOrDefaultAsync(spec);
         if (user is not null)
+        {
+            logger.LogWarning("Failed signup attempt for email: {Email}. Reason: Email already exists.",
+                command.Email);
             throw new EmailConflictException();
+        }
 
         var hashedPassword = passwordHasher.HashPassword(command.Password);
         user = new User(command.Username, command.Email, hashedPassword);
@@ -25,6 +30,9 @@ public class SignupUseCase(IRepository<User> repository,
         await repository.AddAsync(user);
 
         var token = jwtProvider.Create(user);
+
+        logger.LogInformation("User signed up successfully. UserId: {UserId}",
+            user.Id);
 
         return new SignupResult()
         {

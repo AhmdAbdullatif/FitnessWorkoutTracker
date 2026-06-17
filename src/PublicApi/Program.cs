@@ -25,6 +25,7 @@ using Application.Features.Workouts.GetById;
 using Application.Features.Workouts.Update;
 using FastEndpoints;
 using Infrastructure.Data;
+using Infrastructure.Logging;
 using Infrastructure.Services;
 using Infrastructure.Services.Authentication;
 using Infrastructure.Services.Repositories;
@@ -35,6 +36,10 @@ using PublicApi.Middlewares;
 using PublicApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders()
+    .AddConsole()
+    .AddDebug();
 
 builder.Services.AddFastEndpoints();
 
@@ -61,6 +66,8 @@ builder.Services.AddAuthentication()
             ClockSkew = TimeSpan.Zero
         };
     });
+
+builder.Services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 builder.Services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
