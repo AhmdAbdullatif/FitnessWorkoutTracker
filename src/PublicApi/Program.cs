@@ -24,12 +24,14 @@ using Application.Features.Workouts.GetAll;
 using Application.Features.Workouts.GetById;
 using Application.Features.Workouts.Update;
 using FastEndpoints;
+using HealthChecks.UI.Client;
 using Infrastructure.Data;
 using Infrastructure.Logging;
 using Infrastructure.Services;
 using Infrastructure.Services.Authentication;
 using Infrastructure.Services.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PublicApi.Middlewares;
@@ -43,9 +45,10 @@ builder.Logging.ClearProviders()
 
 builder.Services.AddFastEndpoints();
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(connectionString);
 });
 
 var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()!;
@@ -66,6 +69,9 @@ builder.Services.AddAuthentication()
             ClockSkew = TimeSpan.Zero
         };
     });
+
+builder.Services.AddHealthChecks()
+    .AddSqlServer(connectionString);
 
 builder.Services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
@@ -131,6 +137,11 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.MapHealthChecks("/health", new HealthCheckOptions()
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.UseAuthentication();
 
