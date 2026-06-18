@@ -9,22 +9,29 @@ namespace Application.Features.ScheduledWorkouts.GetById;
 
 public class GetScheduledWorkoutByIdUseCase(IReadRepository<ScheduledWorkout> readRepository,
     ICurrentUserAccessor currentUserAccessor,
-    IUtcLocalConverter utcLocalConverter) : IGetScheduledWorkoutByIdUseCase
+    IUtcLocalConverter utcLocalConverter,
+    IAppLogger<GetScheduledWorkoutByIdUseCase> logger) : IGetScheduledWorkoutByIdUseCase
 {
     public async Task<ScheduledWorkoutDto> ExecuteAsync(Guid scheduledWorkoutId, string userZone)
     {
         if (string.IsNullOrWhiteSpace(userZone))
+        {
+            logger.LogDebug("Timezone information missing for retrieving scheduled workout. ScheduledWorkoutId: {ScheduledWorkoutId}", scheduledWorkoutId);
             throw new DateTimeZoneNotFoundException("");
+        }
 
         var userId = currentUserAccessor.GetId();
 
-        var spec = 
+        var spec =
             new GetScheduledWorkoutByIdWithWorkoutReadonlySpec(scheduledWorkoutId, userId);
 
         var scheduledWorkout = await readRepository.FirstOrDefaultAsync(spec);
-        
+
         if (scheduledWorkout is null)
+        {
+            logger.LogInformation("Scheduled workout with ID `{ScheduledWorkoutId}` not found. UserId: {UserId}", scheduledWorkoutId, userId);
             throw new NotFoundException($"Scheduled workout with ID `{scheduledWorkoutId}` not found.");
+        }
 
 
         var scheduledWorkoutDto = new ScheduledWorkoutDto()
@@ -44,6 +51,9 @@ public class GetScheduledWorkoutByIdUseCase(IReadRepository<ScheduledWorkout> re
         if (scheduledWorkout.CompletedAt is not null)
             scheduledWorkoutDto.CompletedAt = utcLocalConverter
                 .ConvertUtcToLocal(scheduledWorkout.CompletedAt.GetValueOrDefault(), userZone);
+
+        logger.LogDebug("Retrieved scheduled workout details. ScheduledWorkoutId: {ScheduledWorkoutId}, Status: {Status}, UserId: {UserId}",
+            scheduledWorkoutId, scheduledWorkout.Status, userId);
 
         return scheduledWorkoutDto;
     }

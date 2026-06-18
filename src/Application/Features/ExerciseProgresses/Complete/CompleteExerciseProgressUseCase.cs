@@ -6,7 +6,8 @@ using Domain.Entities;
 namespace Application.Features.ExerciseProgresses.Complete;
 
 public class CompleteExerciseProgressUseCase(IRepository<ExerciseProgress> repository,
-    ICurrentUserAccessor currentUserAccessor) : ICompleteExerciseProgressUseCase
+    ICurrentUserAccessor currentUserAccessor,
+    IAppLogger<CompleteExerciseProgressUseCase> logger) : ICompleteExerciseProgressUseCase
 {
     public async Task ExecuteAsync(Guid exerciseProgressId)
     {
@@ -17,9 +18,16 @@ public class CompleteExerciseProgressUseCase(IRepository<ExerciseProgress> repos
         var exerciseProgress = await repository.FirstOrDefaultAsync(spec);
 
         if (exerciseProgress is null)
+        {
+            logger.LogInformation("Exercise progress with ID `{ExerciseProgressId}` not found for completion. UserId: {UserId}",
+                exerciseProgressId,
+                userId);
             throw new NotFoundException($"Exercise progress with ID `{exerciseProgressId}` not found.");
+        }
 
         exerciseProgress.Complete();
+        logger.LogInformation("Exercise progress completed. ExerciseProgressId: {ExerciseProgressId}, UserId: {UserId}", exerciseProgressId, userId);
+
         await repository.SaveChangesAsync();
     }
 }

@@ -77,9 +77,13 @@ public class ExerciseProgress
 
         Status = ExerciseStatus.Skipped;
     }
-    public void AddNote(string note)
+    public Guid AddNote(string content)
     {
-        ArgumentNullException.ThrowIfNull(note);
-        _notes.Add(new Note(note, Id));
+        ArgumentNullException.ThrowIfNull(content);
+
+        var note = new Note(content, Id);
+        _notes.Add(note);
+
+        return note.Id;
     }
 }

@@ -8,13 +8,17 @@ namespace Application.Features.Workouts.GetAll
 {
     public class GetWorkoutsUseCase(IReadRepository<Workout> readRepository,
         ICurrentUserAccessor currentUserAccessor,
-        IUtcLocalConverter utcLocalConverter
+        IUtcLocalConverter utcLocalConverter,
+        IAppLogger<GetWorkoutsUseCase> logger
     ) : IGetWorkoutsUseCase
     {
         public async Task<GetWorkoutsResponse> ExecuteAsync(string userZone)
         {
             if (string.IsNullOrWhiteSpace(userZone))
+            {
+                logger.LogDebug("Timezone information missing for retrieving exercise progresses.");
                 throw new DateTimeZoneNotFoundException("");
+            }
 
             var userId = currentUserAccessor.GetId();
 

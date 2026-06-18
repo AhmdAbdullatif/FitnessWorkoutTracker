@@ -8,12 +8,16 @@ namespace Application.Features.ExerciseProgresses.GetById;
 
 public class GetExerciseProgressByIdUseCase(IReadRepository<ExerciseProgress> readRepository,
     ICurrentUserAccessor currentUserAccessor,
-    IUtcLocalConverter utcLocalConverter) : IGetExerciseProgressByIdUseCase
+    IUtcLocalConverter utcLocalConverter,
+    IAppLogger<GetExerciseProgressByIdUseCase> logger) : IGetExerciseProgressByIdUseCase
 {
     public async Task<GetExerciseProgressByIdResponse> ExecuteAsync(Guid exerciseProgressId, string userZone)
     {
         if (string.IsNullOrWhiteSpace(userZone))
+        {
+            logger.LogDebug("Timezone information missing for retrieving exercise progress. ExerciseProgressId: {ExerciseProgressId}", exerciseProgressId);
             throw new DateTimeZoneNotFoundException("");
+        }
 
         var userId = currentUserAccessor.GetId();
 
@@ -22,7 +26,10 @@ public class GetExerciseProgressByIdUseCase(IReadRepository<ExerciseProgress> re
         var exerciseProgress = await readRepository.FirstOrDefaultAsync(spec);
 
         if (exerciseProgress is null)
+        {
+            logger.LogInformation("Exercise progress with ID `{ExerciseProgressId}` not found. UserId: {UserId}", exerciseProgressId, userId);
             throw new NotFoundException($"Exercise progress with ID `{exerciseProgressId}` not found.");
+        }
 
         var response = new GetExerciseProgressByIdResponse()
         {
@@ -47,6 +54,8 @@ public class GetExerciseProgressByIdUseCase(IReadRepository<ExerciseProgress> re
             response.CompletedAt = utcLocalConverter
                 .ConvertUtcToLocal(exerciseProgress.CompletedAt.GetValueOrDefault(), userZone);
 
+        logger.LogDebug("Retrieved exercise progress details. ExerciseProgressId: {ExerciseProgressId}, NotesCount: {NotesCount}, UserId: {UserId}",
+            exerciseProgressId, exerciseProgress.Notes.Count, userId);
 
         return response;
     }

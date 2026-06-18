@@ -83,7 +83,7 @@ builder.Services.AddScoped<IGetWorkoutsUseCase, GetWorkoutsUseCase>();
 
 builder.Services.AddScoped<ICreateExerciseUseCase, CreateExerciseUseCase>();
 
-builder.Services.AddScoped<IGetExercisesUseCases, GetExercisesUseCases>();
+builder.Services.AddScoped<IGetExercisesUseCase, GetExercisesUseCase>();
 
 builder.Services.AddSingleton<IUtcLocalConverter, UtcLocalConverter>();
 

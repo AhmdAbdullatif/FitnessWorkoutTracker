@@ -8,12 +8,16 @@ namespace Application.Features.Workouts.GetById;
 
 public class GetWorkoutByIdUseCase(IReadRepository<Workout> readRepository,
     ICurrentUserAccessor currentUserAccessor,
-    IUtcLocalConverter utcLocalConverter) : IGetWorkoutByIdUseCase
+    IUtcLocalConverter utcLocalConverter,
+    IAppLogger<GetWorkoutByIdUseCase> logger) : IGetWorkoutByIdUseCase
 {
     public async Task<GetWorkoutByIdResponse> ExecuteAsync(Guid workoutId, string userZone)
     {
         if (string.IsNullOrWhiteSpace(userZone))
+        {
+            logger.LogDebug("Time zone header missing for retrieving workout.");
             throw new DateTimeZoneNotFoundException("");
+        }
 
         var userId = currentUserAccessor.GetId();
 
@@ -21,7 +25,12 @@ public class GetWorkoutByIdUseCase(IReadRepository<Workout> readRepository,
         var workout = await readRepository.FirstOrDefaultAsync(spec);
 
         if (workout is null)
+        {
+            logger.LogInformation("Workout not found.\nWorkoutId: {WorkoutId}",
+                workoutId);
+
             throw new NotFoundException($"Workout with ID `{workoutId}` not found.");
+        }
 
         return new GetWorkoutByIdResponse()
         {

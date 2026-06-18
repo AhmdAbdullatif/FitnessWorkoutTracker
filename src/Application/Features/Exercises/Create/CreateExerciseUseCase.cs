@@ -10,7 +10,8 @@ using System.Text;
 namespace Application.Features.Exercises.Create
 {
     public class CreateExerciseUseCase(IRepository<Workout> repository,
-        ICurrentUserAccessor currentUserAccessor
+        ICurrentUserAccessor currentUserAccessor,
+        IAppLogger<CreateExerciseUseCase> logger
     ) : ICreateExerciseUseCase
     {
         public async Task<CreateExerciseResponse> ExecuteAsync(Guid workoutId, CreateExerciseRequest req)
@@ -22,12 +23,22 @@ namespace Application.Features.Exercises.Create
             Workout? workout = await repository.FirstOrDefaultAsync(spec);
 
             if (workout is null)
-                throw new NotFoundException("Workout not found.");
+            {
+                logger.LogInformation("Workout not found for creating an exercise.\nWorkoutId: {WorkoutId}.",
+                    workoutId);
+
+                throw new NotFoundException($"Workout with ID: {workoutId} not found.");
+            }
 
             var exercise = new Exercise(req.Title, req.Description, workoutId);
             workout.AddExercise(exercise);
 
             await repository.SaveChangesAsync();
+
+            logger.LogInformation("Exercise created.\nExerciseId: {ExerciseId}\nUserId: {UserId}",
+                exercise.Id,
+                userId);
+
             return new CreateExerciseResponse()
             {
                 Id = exercise.Id,

@@ -7,7 +7,8 @@ using Domain.Entities;
 namespace Application.Features.ScheduledWorkouts.Delete;
 
 public class DeleteScheduledWorkoutUseCase(IRepository<ScheduledWorkout> repository,
-    ICurrentUserAccessor currentUserAccessor) : IDeleteScheduledWorkoutUseCase
+    ICurrentUserAccessor currentUserAccessor,
+    IAppLogger<DeleteScheduledWorkoutUseCase> logger) : IDeleteScheduledWorkoutUseCase
 {
     public async Task ExecuteAsync(Guid scheduledWorkoutId)
     {
@@ -18,8 +19,12 @@ public class DeleteScheduledWorkoutUseCase(IRepository<ScheduledWorkout> reposit
         var scheduledWorkout = await repository.FirstOrDefaultAsync(spec);
 
         if (scheduledWorkout is null)
+        {
+            logger.LogInformation("Scheduled workout with ID `{ScheduledWorkoutId}` not found for deletion. UserId: {UserId}", scheduledWorkoutId, userId);
             throw new NotFoundException($"Scheduled workout with ID `{scheduledWorkoutId}` not found.");
+        }
 
         await repository.DeleteAsync(scheduledWorkout);
+        logger.LogInformation("Scheduled workout deleted. ScheduledWorkoutId: {ScheduledWorkoutId}, UserId: {UserId}", scheduledWorkoutId, userId);
     }
 }

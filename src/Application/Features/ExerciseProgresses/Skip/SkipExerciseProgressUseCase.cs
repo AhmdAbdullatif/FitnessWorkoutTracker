@@ -6,7 +6,8 @@ using Domain.Entities;
 namespace Application.Features.ExerciseProgresses.Skip;
 
 public class SkipExerciseProgressUseCase(IRepository<ExerciseProgress> repository,
-    ICurrentUserAccessor currentUserAccessor) : ISkipExerciseProgressUseCase
+    ICurrentUserAccessor currentUserAccessor,
+    IAppLogger<SkipExerciseProgressUseCase> logger) : ISkipExerciseProgressUseCase
 {
     public async Task ExecuteAsync(Guid exerciseProgressId)
     {
@@ -17,9 +18,16 @@ public class SkipExerciseProgressUseCase(IRepository<ExerciseProgress> repositor
         var exerciseProgress = await repository.FirstOrDefaultAsync(spec);
 
         if (exerciseProgress is null)
+        {
+            logger.LogInformation("Exercise progress with ID `{ExerciseProgressId}` not found for skipping. UserId: {UserId}",
+                exerciseProgressId,
+                userId);
             throw new NotFoundException($"Exercise progress `{exerciseProgressId}` not found.");
+        }
 
         exerciseProgress.Skip();
+        logger.LogInformation("Exercise progress skipped. ExerciseProgressId: {ExerciseProgressId}, UserId: {UserId}", exerciseProgressId, userId);
+
         await repository.SaveChangesAsync();
     }
 }

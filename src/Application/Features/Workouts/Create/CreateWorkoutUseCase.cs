@@ -8,7 +8,8 @@ using System.Text;
 namespace Application.Features.Workouts.Create
 {
     public class CreateWorkoutUseCase(IRepository<Workout> repository,
-        ICurrentUserAccessor currentUserAccessor
+        ICurrentUserAccessor currentUserAccessor,
+        IAppLogger<CreateWorkoutUseCase> logger
     ) : ICreateWorkoutUseCase
     {
         public async Task<CreateWorkoutResponse> ExecuteAsync(CreateWorkoutCommand command)
@@ -18,6 +19,10 @@ namespace Application.Features.Workouts.Create
             var workout = new Workout(command.Title, command.Description, userId);
 
             await repository.AddAsync(workout);
+
+            logger.LogInformation("Workout created\nWorkoutId: {WorkoutId}\nUserId: {UserId}",
+                workout.Id,
+                userId);
 
             return new CreateWorkoutResponse()
             {

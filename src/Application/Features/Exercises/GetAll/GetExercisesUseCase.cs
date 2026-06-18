@@ -10,22 +10,31 @@ using System.Text;
 
 namespace Application.Features.Exercises.GetAll
 {
-    public class GetExercisesUseCases(IRepository<Workout> repository,
+    public class GetExercisesUseCase(IRepository<Workout> repository,
         ICurrentUserAccessor currentUserAccessor,
-        IUtcLocalConverter utcLocalConverter) : IGetExercisesUseCases
+        IUtcLocalConverter utcLocalConverter,
+        IAppLogger<GetExercisesUseCase> logger) : IGetExercisesUseCase
     {
         public async Task<GetExercisesResponse> ExecuteAsync(Guid workoutId, string userZone)
         {
             if (string.IsNullOrWhiteSpace(userZone))
+            {
+                logger.LogDebug("Timezone information missing for retrieving exercising. WorkoutId: {WorkoutId}", workoutId);
                 throw new DateTimeZoneNotFoundException("");
-                
+            }
+
             var userId = currentUserAccessor.GetId();
 
             var spec = new GetWorkoutByIdWithExercisesSpec(workoutId, userId);
             Workout? workout = await repository.FirstOrDefaultAsync(spec);
 
             if (workout is null)
+            {
+                logger.LogInformation("Workout not found.\nWorkoutId: {WorkoutId}",
+                    workoutId);
+
                 throw new NotFoundException($"Workout with ID `{workoutId} not found.`");
+            }
 
             var exerciseDtos = workout.Exercises.Select(x => new ExerciseDto()
             {

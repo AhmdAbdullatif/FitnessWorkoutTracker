@@ -9,12 +9,16 @@ namespace Application.Features.ExerciseProgresses.GetAll;
 
 public class GetExerciseProgressesUseCase(IReadRepository<ScheduledWorkout> readRepository,
     ICurrentUserAccessor currentUserAccessor,
-    IUtcLocalConverter utcLocalConverter) : IGetExerciseProgressesUseCase
+    IUtcLocalConverter utcLocalConverter,
+    IAppLogger<GetExerciseProgressesUseCase> logger) : IGetExerciseProgressesUseCase
 {
     public async Task<GetExerciseProgressesResponse> ExecuteAsync(Guid scheduledWorkoutId, string userZone)
     {
         if (string.IsNullOrWhiteSpace(userZone))
+        {
+            logger.LogDebug("Timezone information missing for retrieving exercise progresses.");
             throw new DateTimeZoneNotFoundException("");
+        }
 
         var userId = currentUserAccessor.GetId();
 
@@ -25,7 +29,12 @@ public class GetExerciseProgressesUseCase(IReadRepository<ScheduledWorkout> read
             .FirstOrDefaultAsync(spec);
 
         if (scheduledWorkout is null)
+        {
+            logger.LogInformation("Scheduled workout with ID `{ScheduledWorkoutId}` not found. UserId: {UserId}",
+                scheduledWorkoutId,
+                userId);
             throw new NotFoundException($"Scheduled workout with ID `{scheduledWorkoutId}` not found.");
+        }
 
         var exerciseProgressDtos = new List<ExerciseProgressDto>();
         foreach (var exerciseProgress in scheduledWorkout.ExerciseProgresses)
@@ -50,6 +59,9 @@ public class GetExerciseProgressesUseCase(IReadRepository<ScheduledWorkout> read
 
             exerciseProgressDtos.Add(exerciseProgressDto);
         }
+
+        logger.LogInformation("Retrieved {ExerciseProgressCount} exercise progresses for scheduled workout {ScheduledWorkoutId}. UserId: {UserId}",
+            exerciseProgressDtos.Count, scheduledWorkoutId, userId);
 
         return new GetExerciseProgressesResponse()
         {
