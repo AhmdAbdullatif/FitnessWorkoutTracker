@@ -9,15 +9,15 @@ namespace Infrastructure.Services.Authentication;
 
 public class JwtProvider(JwtOptions jwtOptions) : IJwtProvider
 {
-    public string Create(User user)
+    public string Create(Guid id, string email)
     {
         var descriptor = new SecurityTokenDescriptor()
         {
             Expires = DateTime.UtcNow.AddMinutes(jwtOptions.LifeTime),
             Subject = new ClaimsIdentity(new Claim[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, id.ToString()),
+                new Claim(ClaimTypes.Email, email),
             }),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
                 SecurityAlgorithms.HmacSha256)

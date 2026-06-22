@@ -29,7 +29,7 @@ public class SignupUseCase(IRepository<User> repository,
 
         await repository.AddAsync(user);
 
-        var token = jwtProvider.Create(user);
+        var token = jwtProvider.Create(user.Id, user.Email);
 
         logger.LogInformation("User signed up successfully. UserId: {UserId}",
             user.Id);

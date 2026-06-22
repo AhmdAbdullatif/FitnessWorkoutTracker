@@ -47,10 +47,20 @@ builder.Logging.ClearProviders()
 builder.Services.AddFastEndpoints();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
-builder.Services.AddDbContext<AppDbContext>(options =>
+if (builder.Environment.IsEnvironment("Testing"))
 {
-    options.UseSqlServer(connectionString);
-});
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        options.UseSqlite("Data Source=:memory:");
+    });
+}
+else
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        options.UseSqlServer(connectionString);
+    });
+}
 
 var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()!;
 builder.Services.AddSingleton(jwtOptions);

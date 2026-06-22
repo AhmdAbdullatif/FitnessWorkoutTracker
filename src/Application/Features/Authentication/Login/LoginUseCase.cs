@@ -37,7 +37,7 @@ namespace Application.Features.Authentication.Login
                 throw new InvalidUserCredentialsException();
             }
 
-            var token = jwtProvider.Create(user);
+            var token = jwtProvider.Create(user.Id, user.Email);
 
             logger.LogInformation("User logged in successfully. UserId: {UserId}",
             user.Id);

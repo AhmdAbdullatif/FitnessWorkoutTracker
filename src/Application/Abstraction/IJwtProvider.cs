@@ -4,5 +4,5 @@ namespace Application.Abstraction;
 
 public interface IJwtProvider
 {
-    string Create(User user);
+    string Create(Guid id, string email);
 }
