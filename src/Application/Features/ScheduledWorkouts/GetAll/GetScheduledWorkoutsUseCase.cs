@@ -14,7 +14,7 @@ public class GetScheduledWorkoutsUseCase(
     IUtcLocalConverter utcLocalConverter,
     IAppLogger<GetScheduledWorkoutsUseCase> logger) : IGetScheduledWorkoutsUseCase
 {
-    public async Task<GetScheduledWorkoutsResponse> ExecuteAsync(GetScheduledWorkoutsRequest req,
+    public async Task<GetScheduledWorkoutsResponse> ExecuteAsync(GetScheduledWorkoutsQuery query,
         Guid workoutId,
         string userZone
     )
@@ -42,9 +42,9 @@ public class GetScheduledWorkoutsUseCase(
         var scheduledWorkoutsSpec = new GetScheduledWorkoutsReadonlySpec(
             workoutId,
             userId,
-            req.SortOrder?.Trim().ToLower(),
-            skip: (req.Page - 1) * req.PageSize,
-            take: req.PageSize
+            query.SortOrder?.Trim().ToLower(),
+            skip: (query.Page - 1) * query.PageSize,
+            take: query.PageSize
         );
 
         var scheduledWorkouts = await scheduledWorkoutRepository.ListAsync(scheduledWorkoutsSpec);

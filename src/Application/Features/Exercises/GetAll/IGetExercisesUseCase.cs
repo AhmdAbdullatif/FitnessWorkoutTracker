@@ -2,6 +2,6 @@ namespace Application.Features.Exercises.GetAll
 {
     public interface IGetExercisesUseCase
     {
-        Task<GetExercisesResponse> ExecuteAsync(GetExercisesRequest req, Guid workoutId, string userZone);
+        Task<GetExercisesResponse> ExecuteAsync(GetExercisesQuery req, Guid workoutId, string userZone);
     }
 }

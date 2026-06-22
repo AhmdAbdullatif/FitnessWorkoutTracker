@@ -15,7 +15,7 @@ namespace Application.Features.Exercises.GetAll
         IUtcLocalConverter utcLocalConverter,
         IAppLogger<GetExercisesUseCase> logger) : IGetExercisesUseCase
     {
-        public async Task<GetExercisesResponse> ExecuteAsync(GetExercisesRequest req, Guid workoutId, string userZone)
+        public async Task<GetExercisesResponse> ExecuteAsync(GetExercisesQuery query, Guid workoutId, string userZone)
         {
             if (string.IsNullOrWhiteSpace(userZone))
             {
@@ -39,10 +39,10 @@ namespace Application.Features.Exercises.GetAll
             var exercisesSpec = new GetExercisesReadonlySpec(
                 workoutId,
                 userId,
-                req.SearchTerm?.Trim().ToLower(),
-                req.SortOrder?.Trim().ToLower(),
-                skip: (req.Page - 1) * req.PageSize,
-                take: req.PageSize
+                query.SearchTerm?.Trim().ToLower(),
+                query.SortOrder?.Trim().ToLower(),
+                skip: (query.Page - 1) * query.PageSize,
+                take: query.PageSize
             );
 
             var  exercises = await exerciseRepository.ListAsync(exercisesSpec);

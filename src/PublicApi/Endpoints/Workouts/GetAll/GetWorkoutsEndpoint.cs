@@ -5,18 +5,20 @@ using PublicApi.Constants;
 namespace PublicApi.Endpoints.Workouts.GetAll
 {
     public class GetWorkoutsEndpoint(IGetWorkoutsUseCase getWorkoutsUseCase) 
-        : Endpoint<GetWorkoutsRequest, GetWorkoutsResponse>
+        : Endpoint<GetWorkoutsEndpointRequest, GetWorkoutsResponse>
     {
         public override void Configure()
         {
             Get("api/workouts");
         }
 
-        public override async Task HandleAsync(GetWorkoutsRequest req, CancellationToken ct)
+        public override async Task HandleAsync(GetWorkoutsEndpointRequest req, CancellationToken ct)
         {
             var userZone = HttpContext.Request.Headers[HeaderNames.TIME_ZONE_HEADER].ToString();
 
-            var response = await getWorkoutsUseCase.ExecuteAsync(req, userZone);
+            var query = new GetWorkoutsQuery(req.Page, req.PageSize, req.SearchTerm, req.SortOrder);
+
+            var response = await getWorkoutsUseCase.ExecuteAsync(query, userZone);
 
             await SendAsync(response, cancellation: ct);
         }

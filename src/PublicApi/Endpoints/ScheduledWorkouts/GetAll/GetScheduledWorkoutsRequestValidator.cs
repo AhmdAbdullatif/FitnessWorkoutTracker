@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace PublicApi.Endpoints.ScheduledWorkouts.GetAll;
 
-public class GetScheduledWorkoutsRequestValidator : Validator<GetScheduledWorkoutsRequest>
+public class GetScheduledWorkoutsRequestValidator : Validator<GetScheduledWorkoutsEndpointRequest>
 {
     public GetScheduledWorkoutsRequestValidator()
     {

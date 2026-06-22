@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace PublicApi.Endpoints.Exercises.GetAll;
 
-public class GetExercisesRequestValidator : Validator<GetExercisesRequest>
+public class GetExercisesRequestValidator : Validator<GetExercisesEndpointRequest>
 {
     public GetExercisesRequestValidator()
     {

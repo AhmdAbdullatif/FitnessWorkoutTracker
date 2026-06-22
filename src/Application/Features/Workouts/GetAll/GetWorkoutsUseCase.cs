@@ -12,7 +12,7 @@ namespace Application.Features.Workouts.GetAll
         IAppLogger<GetWorkoutsUseCase> logger
     ) : IGetWorkoutsUseCase
     {
-        public async Task<GetWorkoutsResponse> ExecuteAsync(GetWorkoutsRequest req, string userZone)
+        public async Task<GetWorkoutsResponse> ExecuteAsync(GetWorkoutsQuery query, string userZone)
         {
             if (string.IsNullOrWhiteSpace(userZone))
             {
@@ -24,10 +24,10 @@ namespace Application.Features.Workouts.GetAll
 
             var spec = new GetAllWorkoutsReadonlySpec(
                 userId,
-                req.SearchTerm?.Trim().ToLower(),
-                sortOrder: req.SortOrder?.Trim().ToLower(),
-                skip: (req.Page - 1) * req.PageSize,
-                take: req.PageSize
+                query.SearchTerm?.Trim().ToLower(),
+                sortOrder: query.SortOrder?.Trim().ToLower(),
+                skip: (query.Page - 1) * query.PageSize,
+                take: query.PageSize
             );
 
             var workouts = await readRepository.ListAsync(spec);
