@@ -35,6 +35,9 @@ public class ExerciseProgress
         if (ScheduledWorkout.Status != WorkoutStatus.InProgress)
             throw new ScheduledWorkoutNotInProgressException("Cannot start an exercise progress that is not in a running scheduled workout.");
 
+        if (Status != ExerciseStatus.Pending)
+            throw new ExerciseNotPendingException(Id);
+
         if (sets <= 0)
             throw new NegativeNumberException("Sets can't be zero or negative.");
 
@@ -44,9 +47,6 @@ public class ExerciseProgress
         StartedAt = SystemClock.Instance.GetCurrentInstant();
         Sets = sets;
         Reps = reps;
-
-        if (Status == ExerciseStatus.Completed) // can reopen again
-            CompletedAt = null;
 
         Status = ExerciseStatus.InProgress;
     }
