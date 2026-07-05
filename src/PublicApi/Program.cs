@@ -3,6 +3,7 @@ using FastEndpoints.Swagger;
 using HealthChecks.UI.Client;
 using Infrastructure.Data;
 using Infrastructure.Services.Authentication;
+using Infrastructure.Services.BackgroundServices;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using PublicApi;
@@ -40,6 +41,8 @@ builder.Services.AddHealthChecks()
     .AddSqlServer(connectionString);
 
 builder.Services.AddCustomServices();
+
+builder.Services.AddHostedService<RefreshTokenCleanupService>();
 
 builder.Services.AddOpenApi();
 
