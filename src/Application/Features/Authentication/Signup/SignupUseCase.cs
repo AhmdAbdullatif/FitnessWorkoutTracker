@@ -6,17 +6,18 @@ using Domain.Entities;
 
 namespace Application.Features.Authentication.Signup;
 
-public class SignupUseCase(IRepository<User> repository,
+public class SignupUseCase(IRepository<User> userRepository,
+    IRepository<RefreshToken> refreshRepository,
     IJwtProvider jwtProvider,
     IPasswordHasher passwordHasher,
     IAppLogger<SignupUseCase> logger
 ) : ISignupUseCase
 
 {
-    public async Task<SignupResult> ExecuteAsync(SignupCommand command)
+    public async Task<AuthenticateResponse> ExecuteAsync(SignupCommand command)
     {
         var spec = new GetUserByEmailReadonlySpec(command.Email);
-        User? user = await repository.FirstOrDefaultAsync(spec);
+        User? user = await userRepository.FirstOrDefaultAsync(spec);
         if (user is not null)
         {
             logger.LogWarning("Failed signup attempt for email: {Email}. Reason: Email already exists.",
@@ -27,16 +28,20 @@ public class SignupUseCase(IRepository<User> repository,
         var hashedPassword = passwordHasher.HashPassword(command.Password);
         user = new User(command.Username, command.Email, hashedPassword);
 
-        await repository.AddAsync(user);
+        await userRepository.AddAsync(user);
 
-        var token = jwtProvider.Create(user.Id, user.Email);
+        var accessToken = jwtProvider.CreateAccessToken(user.Id, user.Email);
+        var refreshToken = new RefreshToken(jwtProvider.CreateRefreshToken(), user.Id);
+
+        await refreshRepository.AddAsync(refreshToken);
 
         logger.LogInformation("User signed up successfully. UserId: {UserId}",
             user.Id);
 
-        return new SignupResult()
+        return new AuthenticateResponse()
         {
-            Token = token
+            AccessToken = accessToken,
+            RefreshToken = refreshToken.Token
         };
     }
 }

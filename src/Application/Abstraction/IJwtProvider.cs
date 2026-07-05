@@ -4,5 +4,6 @@ namespace Application.Abstraction;
 
 public interface IJwtProvider
 {
-    string Create(Guid id, string email);
+    string CreateAccessToken(Guid id, string email);
+    string CreateRefreshToken();
 }

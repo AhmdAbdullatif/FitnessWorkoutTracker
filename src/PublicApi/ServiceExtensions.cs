@@ -1,6 +1,7 @@
 using System.Text;
 using Application.Abstraction;
 using Application.Features.Authentication.Login;
+using Application.Features.Authentication.Refresh;
 using Application.Features.Authentication.Signup;
 using Application.Features.ExerciseProgresses.AddNote;
 using Application.Features.ExerciseProgresses.Complete;
@@ -24,6 +25,7 @@ using Application.Features.Workouts.Delete;
 using Application.Features.Workouts.GetAll;
 using Application.Features.Workouts.GetById;
 using Application.Features.Workouts.Update;
+using FastEndpoints;
 using Infrastructure.Logging;
 using Infrastructure.Services;
 using Infrastructure.Services.Authentication;
@@ -113,6 +115,8 @@ public static class ServiceExtensions
         services.AddScoped<IDeleteScheduledWorkoutUseCase, DeleteScheduledWorkoutUseCase>();
 
         services.AddScoped<IGetScheduledWorkoutsUseCase, GetScheduledWorkoutsUseCase>();
+
+        services.AddScoped<IRefreshTokenUseCase, RefreshTokenUseCase>();
 
         return services;
     }

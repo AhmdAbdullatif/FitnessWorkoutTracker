@@ -1,10 +1,11 @@
+using Application.Features.Authentication;
 using Application.Features.Authentication.Signup;
 using FastEndpoints;
 using PublicApi.Constants;
 
 namespace PublicApi.Endpoints.Authentication.Signup;
 
-public class SignupEndpoint(ISignupUseCase signupUseCase) : Endpoint<SignupRequest, SignupResult>
+public class SignupEndpoint(ISignupUseCase signupUseCase) : Endpoint<SignupRequest, AuthenticateResponse>
 {
     public override void Configure()
     {
@@ -16,7 +17,7 @@ public class SignupEndpoint(ISignupUseCase signupUseCase) : Endpoint<SignupReque
             b.WithSummary("Register a new user.");
             b.WithDescription("Create a new user account and return an authentication token.");
 
-            b.Produces<SignupResult>(StatusCodes.Status200OK);
+            b.Produces<AuthenticateResponse>(StatusCodes.Status200OK);
             b.Produces(StatusCodes.Status400BadRequest);
             b.Produces(StatusCodes.Status409Conflict);
 
@@ -26,12 +27,9 @@ public class SignupEndpoint(ISignupUseCase signupUseCase) : Endpoint<SignupReque
 
     public async override Task HandleAsync(SignupRequest req, CancellationToken ct)
     {
-        var result = await signupUseCase.ExecuteAsync(
+        var response = await signupUseCase.ExecuteAsync(
             new SignupCommand(req.Username, req.Email, req.Password));
 
-        await Send.OkAsync(new SignupResult()
-        {
-            Token = result.Token
-        });
+        await Send.OkAsync(response, cancellation: ct);
     }
 }

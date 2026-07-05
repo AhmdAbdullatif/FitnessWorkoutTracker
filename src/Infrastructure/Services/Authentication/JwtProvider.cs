@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Application.Abstraction;
 using Domain.Entities;
@@ -9,7 +10,7 @@ namespace Infrastructure.Services.Authentication;
 
 public class JwtProvider(JwtOptions jwtOptions) : IJwtProvider
 {
-    public string Create(Guid id, string email)
+    public string CreateAccessToken(Guid id, string email)
     {
         var descriptor = new SecurityTokenDescriptor()
         {
@@ -28,4 +29,8 @@ public class JwtProvider(JwtOptions jwtOptions) : IJwtProvider
         return handler.WriteToken(securityToken);
     }
 
+    public string CreateRefreshToken()
+    {
+        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+    }
 }

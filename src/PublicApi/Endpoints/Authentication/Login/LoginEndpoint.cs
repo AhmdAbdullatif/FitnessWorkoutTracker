@@ -1,10 +1,10 @@
-﻿using Application.Features.Authentication.Login;
+﻿using Application.Features.Authentication;
+using Application.Features.Authentication.Login;
 using FastEndpoints;
-using PublicApi.Constants;
 
 namespace PublicApi.Endpoints.Authentication.Login
 {
-    public class LoginEndpoint(ILoginUseCase loginUseCase) : Endpoint<LoginCommand, LoginResponse>
+    public class LoginEndpoint(ILoginUseCase loginUseCase) : Endpoint<LoginCommand, AuthenticateResponse>
     {
         public override void Configure()
         {
@@ -16,7 +16,7 @@ namespace PublicApi.Endpoints.Authentication.Login
                 b.WithSummary("Login a user.");
                 b.WithDescription("Authenticate a user and return a JWT token.");
 
-                b.Produces<LoginResponse>(StatusCodes.Status200OK);
+                b.Produces<AuthenticateResponse>(StatusCodes.Status200OK);
                 b.Produces(StatusCodes.Status400BadRequest);
 
                 b.WithTags(Constants.Tags.AuthenticationTag);

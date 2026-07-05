@@ -9,16 +9,17 @@ using System.Text;
 
 namespace Application.Features.Authentication.Login
 {
-    public class LoginUseCase(IReadRepository<User> readRepository,
+    public class LoginUseCase(IReadRepository<User> userRepository,
+        IRepository<RefreshToken> refreshRepository,
         IJwtProvider jwtProvider,
         IPasswordHasher passwordHasher,
         IAppLogger<LoginUseCase> logger
     ) : ILoginUseCase
     {
-        public async Task<LoginResponse> ExecuteAsync(LoginCommand command)
+        public async Task<AuthenticateResponse> ExecuteAsync(LoginCommand command)
         {
             var spec = new GetUserByEmailReadonlySpec(command.Email);
-            User? user = await readRepository.FirstOrDefaultAsync(spec);
+            User? user = await userRepository.FirstOrDefaultAsync(spec);
 
             if (user is null)
             {
@@ -37,14 +38,18 @@ namespace Application.Features.Authentication.Login
                 throw new InvalidUserCredentialsException();
             }
 
-            var token = jwtProvider.Create(user.Id, user.Email);
+            var accessToken = jwtProvider.CreateAccessToken(user.Id, user.Email);
+            var refreshToken = new RefreshToken(jwtProvider.CreateRefreshToken(), user.Id);
+
+            await refreshRepository.AddAsync(refreshToken);
 
             logger.LogInformation("User logged in successfully. UserId: {UserId}",
             user.Id);
 
-            return new LoginResponse()
+            return new AuthenticateResponse()
             {
-                Token = token,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken.Token
             };
         }
     }

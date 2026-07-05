@@ -1,4 +1,5 @@
 ﻿using Application.Abstraction;
+using Application.Features.Authentication;
 using Application.Features.Authentication.Login;
 using Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,14 +47,15 @@ public class LoginTests : IAsyncLifetime
         var request = new LoginCommand("test@gmail.com", "Test@1234");
 
         var response = await _client.PostAsJsonAsync("api/auth/login", request);
-        var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+        var authResponse = await response.Content.ReadFromJsonAsync<AuthenticateResponse>();
 
         // Assert
         Assert.True(response.IsSuccessStatusCode);
 
-        Assert.NotNull(loginResponse);
+        Assert.NotNull(authResponse);
 
-        Assert.Equal(3, loginResponse!.Token.Split('.').Length);
+        Assert.Equal(3, authResponse!.AccessToken.Split('.').Length);
+        Assert.NotNull(authResponse.RefreshToken);
     }
 
     [Fact]
@@ -85,8 +87,6 @@ public class LoginTests : IAsyncLifetime
         var request = new LoginCommand("test@gmail.com", "Rest1234");
 
         var response = await _client.PostAsJsonAsync("api/auth/login", request);
-        var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
-
         // Assert
         Assert.False(response.IsSuccessStatusCode);
 

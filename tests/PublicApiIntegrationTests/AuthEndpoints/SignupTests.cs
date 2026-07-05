@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using Application.Abstraction;
+using Application.Features.Authentication;
 using Application.Features.Authentication.Signup;
 using Domain.Entities;
 using Infrastructure.Data;
@@ -53,8 +54,9 @@ public class SignupTests : IAsyncLifetime
         Assert.NotNull(user);
         Assert.Equal(request.Email, user.Email);
 
-        var body = await response.Content.ReadFromJsonAsync<SignupResult>();
-        Assert.Equal(3, body!.Token.Split('.').Count());
+        var authResponse = await response.Content.ReadFromJsonAsync<AuthenticateResponse>();
+        Assert.Equal(3, authResponse!.AccessToken.Split('.').Count());
+        Assert.NotNull(authResponse.RefreshToken);
     }
 
     [Fact]

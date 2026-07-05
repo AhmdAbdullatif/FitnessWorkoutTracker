@@ -19,6 +19,7 @@ namespace Infrastructure.Data
         public DbSet<ScheduledWorkout> ScheduledWorkouts => Set<ScheduledWorkout>();
         public DbSet<ExerciseProgress> ExerciseProgresses => Set<ExerciseProgress>();
         public DbSet<Note> Notes => Set<Note>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

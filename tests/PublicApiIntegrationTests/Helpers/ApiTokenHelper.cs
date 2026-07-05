@@ -12,7 +12,7 @@ public class ApiTokenHelper
 
         var jwtProvider = scope.ServiceProvider.GetRequiredService<IJwtProvider>();
 
-        var token = jwtProvider.Create(user.Id, user.Email);
+        var token = jwtProvider.CreateAccessToken(user.Id, user.Email);
         return token;
     }
 }
